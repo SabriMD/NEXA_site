@@ -5,9 +5,8 @@ import os
 
 app = FastAPI()
 
-# Servir les screenshots et assets
-if os.path.exists("screenshots"):
-    app.mount("/screenshots", StaticFiles(directory="screenshots"), name="screenshots")
+app.mount("/screenshots", StaticFiles(directory="screenshots"), name="screenshots")
+app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 
 @app.get("/")
 async def root():
