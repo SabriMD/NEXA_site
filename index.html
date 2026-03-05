@@ -66,18 +66,21 @@
       align-items: center;
       justify-content: space-between;
       transition: background 0.4s, backdrop-filter 0.4s;
+      background: #FFFFFF;
+      backdrop-filter: blur(6px);
     }
 
     header.scrolled {
-      background: rgba(8,12,8,0.85);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(34,197,94,0.1);
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     }
 
     .header-logos {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
+      gap: 0;
     }
 
     .logo-nexa {
@@ -90,8 +93,8 @@
     }
 
     .logo-slot {
-      width: 80px; height: 36px;
-      border: 1px solid rgba(245,240,232,0.15);
+      width: 120px; height: 65px;
+      border: none;
       border-radius: 6px;
       display: flex;
       align-items: center;
@@ -105,7 +108,7 @@
     nav { display: flex; gap: 2rem; align-items: center; }
 
     nav a {
-      color: rgba(245,240,232,0.6);
+      color: #080C08;
       text-decoration: none;
       font-size: 0.85rem;
       font-weight: 500;
@@ -113,11 +116,11 @@
       transition: color 0.2s;
     }
 
-    nav a:hover { color: var(--vert); }
+    nav a:hover { color: #22C55E; }
 
     .nav-cta {
-      background: var(--vert);
-      color: var(--noir) !important;
+      background: #22C55E;
+      color: #FFFFFF !important;
       padding: 0.5rem 1.2rem;
       border-radius: 6px;
       font-weight: 700 !important;
@@ -200,6 +203,13 @@
     .hero h1 span {
       color: transparent;
       -webkit-text-stroke: 1px var(--vert);
+    }
+
+    .hero-logo-image {
+      width: 120px;
+      height: auto;
+      margin: 1.5rem auto 0;
+      animation: fadeUp 1s 0.3s ease both;
     }
 
     .hero-tagline {
@@ -598,6 +608,32 @@
     /* ---- FEATURES ---- */
     .features {
       padding: 8rem 0;
+      /* solid dark edges with softer middle for smooth transition */
+      background: 
+        linear-gradient(180deg,
+          var(--noir) 0%,
+          var(--noir) 10%,
+          rgba(8,12,8,0.6) 25%,
+          rgba(8,12,8,0.6) 75%,
+          var(--noir) 90%,
+          var(--noir) 100%
+        ),
+        url('assets/background.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      position: relative;
+    }
+
+    /* remove extra pseudo-elements now that gradient handles fading */
+    .features .reveal {
+      position: relative;
+      z-index: 2;
+    }
+
+    .features .container {
+      position: relative;
+      z-index: 1;
     }
 
     .features-grid {
@@ -726,11 +762,68 @@
       z-index: 1;
     }
 
+    /* ---- PARTENAIRES ---- */
+    .partners-section {
+      background: #FFFFFF;
+      padding: 4rem 3rem;
+      border-top: 1px solid rgba(34,197,94,0.1);
+      text-align: center;
+    }
+
+    .partners-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      color: #080C08;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.03em;
+    }
+
+    .partners-description {
+      color: #666666;
+      margin-bottom: 3rem;
+      font-size: 0.95rem;
+    }
+
+    .partners-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .partner-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 12px;
+      background: rgba(34,197,94,0.05);
+      transition: all 0.3s;
+      width: 150px;
+      height: 100px;
+    }
+
+    .partner-item:hover {
+      border-color: var(--vert);
+      background: rgba(34,197,94,0.15);
+      transform: translateY(-5px);
+    }
+
+    .partner-item img {
+      max-width: 100%;
+      max-height: 80px;
+      object-fit: contain;
+    }
+
     /* ---- FOOTER ---- */
     footer {
       background: var(--noir-2);
       border-top: 1px solid rgba(245,240,232,0.07);
-      padding: 3rem;
+      padding: 5rem 3rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -829,9 +922,10 @@
   <!-- HEADER -->
   <header id="header">
     <div class="header-logos">
-      <a href="#"><img src="/assets/logo-nexa.png" alt="NEXA" style="height:40px;"/></a>
-      <div class="logo-slot"><img src="/assets/partenaire1.png" alt="Partenaire 1" style="height:28px; object-fit:contain;"/></div>
-      <div class="logo-slot"><img src="/assets/partenaire2.png" alt="Partenaire 2" style="height:28px; object-fit:contain;"/></div>
+      <a href="#"><img src="assets/logo-nexa.png" alt="NEXA" style="height:60px;"/></a>
+      <div class="logo-slot"><img src="assets/partenaire1.png" alt="Partenaire 1" style="height:55px; object-fit:contain;"/></div>
+      <div class="logo-slot"><img src="assets/partenaire2.png" alt="Partenaire 2" style="height:55px; object-fit:contain;"/></div>
+      <div class="logo-slot"><img src="assets/partenaire3.png" alt="Partenaire 3" style="height:55px; object-fit:contain;"/></div>
     </div>
     <nav>
       <a href="#comment">Comment ça marche</a>
@@ -871,6 +965,7 @@
         Intelligence Pastorale · Afrique
       </div>
       <h1>NE<span>X</span>A</h1>
+      <img src="assets/logo-nexa.png" alt="NEXA Logo" class="hero-logo-image"/>
       <p class="hero-tagline">
         Transformer une <em>photo</em> en intelligence agricole —<br/>
         pour les éleveurs des 50 millions du Sahel
@@ -1000,19 +1095,19 @@
     </div>
     <div class="carousel-track-wrapper">
       <div class="carousel-track" id="carousel">
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="/screenshots/screen1.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="/screenshots/screen2.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="/screenshots/screen3.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="/screenshots/screen1.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="/screenshots/screen2.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="/screenshots/screen3.png" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen1.png" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen2.png" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen3.png" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen1.png" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen2.png" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen3.png" alt=""/></div></div>
         <!-- DUPLICATS boucle infinie -->
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="/screenshots/screen1.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="/screenshots/screen2.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="/screenshots/screen3.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="/screenshots/screen1.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="/screenshots/screen2.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="/screenshots/screen3.png" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen1.png" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen2.png" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen3.png" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen1.png" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen2.png" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen3.png" alt=""/></div></div>
       </div>
     </div>
   </section>
@@ -1118,6 +1213,23 @@
           → Tester la démo web dès maintenant
         </a>
       </p>
+    </div>
+  </section>
+
+  <!-- PARTENAIRES -->
+  <section class="partners-section">
+    <h2 class="partners-title">Nos Partenaires</h2>
+    <p class="partners-description">Nous travaillons avec les leaders de l'innovation en Afrique</p>
+    <div class="partners-grid">
+      <div class="partner-item">
+        <img src="assets/partenaire1.png" alt="Partenaire 1"/>
+      </div>
+      <div class="partner-item">
+        <img src="assets/partenaire2.png" alt="Partenaire 2"/>
+      </div>
+      <div class="partner-item">
+        <img src="assets/partenaire3.png" alt="Partenaire 3"/>
+      </div>
     </div>
   </section>
 
