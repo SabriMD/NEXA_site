@@ -41,7 +41,22 @@
     .store-icon{font-size:1.8rem;line-height:1;}
     .store-sub{font-size:0.6rem;color:var(--gris);text-transform:uppercase;letter-spacing:0.1em;}
     .store-name{font-size:0.95rem;font-weight:600;}
-    .hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:0.5rem;color:var(--gris);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;animation:fadeUp 1s 1s ease both;}
+    .hero-scroll{
+  position:absolute;
+  bottom:0.6rem; /* a little lower */
+  left:48%;
+  transform:translateX(-50%); /* moves slightly left */
+  z-index:10;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:0.5rem;
+  color:var(--gris);
+  font-size:0.7rem;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  animation:fadeUp 1s 1s ease both;
+}
     .scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--vert),transparent);animation:scrollAnim 2s infinite;}
     .stats-bar{background:var(--noir-2);border-top:1px solid rgba(34,197,94,0.1);border-bottom:1px solid rgba(34,197,94,0.1);padding:2rem 3rem;display:flex;justify-content:center;gap:4rem;flex-wrap:wrap;position:relative;z-index:10;}
     .stat-item{text-align:center;}
@@ -85,13 +100,13 @@
     .phone-screen{width:100%;height:100%;}.phone-screen img{width:100%;height:100%;object-fit:cover;}
     .features{padding:8rem 0;background:linear-gradient(180deg,var(--noir) 0%,rgba(8,12,8,0.6) 25%,rgba(8,12,8,0.6) 75%,var(--noir) 100%);position:relative;}
     .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem;}
-    .feature-card{background:rgba(245,240,232,0.02);border:1px solid rgba(245,240,232,0.07);border-radius:16px;padding:2rem;transition:all 0.3s;opacity:0;transform:translateY(20px);}
+    .feature-card{background:rgba(8, 12, 8, 0.5);border:1px solid rgba(245,240,232,0.07);border-radius:16px;padding:2rem;transition:all 0.3s;opacity:0;transform:translateY(20px);}
     .feature-card.visible{opacity:1;transform:translateY(0);}
     .feature-card:nth-child(2){transition-delay:0.1s;}.feature-card:nth-child(3){transition-delay:0.2s;}.feature-card:nth-child(4){transition-delay:0.3s;}.feature-card:nth-child(5){transition-delay:0.4s;}.feature-card:nth-child(6){transition-delay:0.5s;}
-    .feature-card:hover{background:rgba(34,197,94,0.04);border-color:rgba(34,197,94,0.2);transform:translateY(-4px);}
+    .feature-card:hover{background:rgba(34,197,94,0.2);border-color:rgba(34,197,94,0.2);transform:translateY(-4px);}
     .feature-icon{font-size:2rem;margin-bottom:1rem;}
     .feature-card h3{font-size:1rem;font-weight:700;color:var(--blanc);margin-bottom:0.5rem;}
-    .feature-card p{font-size:0.82rem;color:var(--gris);line-height:1.6;}
+    .feature-card p{font-size:0.82rem;color:var(--blanc);line-height:1.6;}
     .revenue{padding:8rem 0;background:linear-gradient(180deg,var(--noir) 0%,#081408 100%);}
     .revenue-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:4rem;}
     .revenue-card{border-radius:16px;padding:2rem 1.5rem;text-align:center;position:relative;overflow:hidden;}
@@ -109,16 +124,16 @@
     .growth-kpi-hero::before{content:'🏆';position:absolute;right:40px;top:50%;transform:translateY(-50%);font-size:80px;opacity:0.05;}
     .kpi-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--vert);font-weight:700;margin-bottom:8px;}
     .kpi-big{font-family:'Bebas Neue',sans-serif;font-size:72px;color:var(--vert);line-height:1;letter-spacing:4px;text-shadow:0 0 40px rgba(34,197,94,0.35);margin-bottom:4px;}
-    .kpi-desc{font-size:15px;color:rgba(245,240,232,0.45);}
+    .kpi-desc{font-size:15px;color:rgba(245, 240, 232, 0.495);}
     .kpi-trend{display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);border-radius:6px;padding:3px 12px;font-size:12px;color:var(--vert);font-weight:700;margin-top:12px;}
     .g-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
     .g-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
     .g-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
     .g-card{background:rgba(15,25,15,0.8);border:1px solid rgba(34,197,94,0.1);border-radius:16px;padding:24px;position:relative;overflow:hidden;}
     .g-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(34,197,94,0.2),transparent);}
-    .g-card-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gris);font-weight:600;margin-bottom:12px;}
+    .g-card-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255, 255, 255, 0.495);font-weight:600;margin-bottom:12px;}
     .g-card-value{font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;letter-spacing:2px;margin-bottom:4px;}
-    .g-card-sub{font-size:12px;color:rgba(245,240,232,0.3);}
+    .g-card-sub{font-size:12px;color:rgba(245, 240, 232, 0.615);}
     .g-card-icon{position:absolute;top:20px;right:20px;font-size:20px;opacity:0.4;}
     .c-vert{color:var(--vert);}.c-or{color:var(--or);}.c-bleu{color:var(--bleu);}
     .g-box{background:rgba(15,25,15,0.8);border:1px solid rgba(34,197,94,0.1);border-radius:16px;padding:28px 32px;}
@@ -144,7 +159,7 @@
     .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end;}
     .bar-fill{width:100%;border-radius:3px 3px 0 0;}
     .bar-lbl{font-size:8px;color:var(--gris);}
-    .g-hack{background:linear-gradient(135deg,rgba(212,160,23,0.07),rgba(212,160,23,0.02));border:1px solid rgba(212,160,23,0.18);border-radius:16px;padding:28px 32px;}
+    .g-hack{background:rgba(15,25,15,0.8);border:1px solid rgba(34,197,94,0.1);border-radius:16px;padding:28px 32px;}
     .hack-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.25);border-radius:6px;padding:4px 12px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--or);font-weight:700;margin-bottom:16px;}
     .hack-title{font-size:17px;font-weight:700;margin-bottom:10px;}
     .hack-desc{font-size:13px;color:rgba(245,240,232,0.45);line-height:1.7;margin-bottom:18px;}
@@ -264,18 +279,18 @@
     <div class="showcase-header reveal"><div class="section-eyebrow">L'application</div><h2 class="section-title">Conçue pour le terrain.</h2><p style="color:var(--gris);font-size:0.9rem;margin-top:0.5rem;">Offline-first · GPS · IA embarquée · Plan de rotation</p></div>
     <div class="carousel-track-wrapper">
       <div class="carousel-track">
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen1.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen2.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen3.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen1.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen2.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen3.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen1.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen2.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen3.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen1.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen2.png" alt=""/></div></div>
-        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen3.png" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen0.jpeg" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen1.jpeg" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen2.jpeg" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen3.jpeg" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen4.jpeg" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen4.1.jpeg" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen5.jpeg" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen5.1.png" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen6.jpeg" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen0.jpeg" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen1.jpeg" alt=""/></div></div>
+        <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen3.jpeg" alt=""/></div></div>
       </div>
     </div>
   </section>
@@ -295,13 +310,13 @@
   </section>
 
   <!-- ════════ GROWTH DASHBOARD ════════ -->
-  <section class="growth" id="growth">
+  <section class="growth" id="growth" style="background-image: url('assets/background.png');">
     <div class="container">
       <div class="growth-header reveal">
         <div class="growth-week-badge">⚡ Semaine 3 — Growth Engine</div>
         <div class="section-eyebrow" style="margin-top:12px;">Traction & Acquisition</div>
         <h2 class="section-title">La data<br/>ne ment pas.</h2>
-        <p style="color:var(--gris);font-size:0.95rem;max-width:500px;margin:0 auto;">Une semaine de prospection sur 3 canaux, un MVP livré, des chiffres réels.</p>
+        <p style="color:var(--blanc);font-size:0.95rem;max-width:500px;margin:0 auto;">Une semaine de prospection sur 3 canaux, un MVP livré, des chiffres réels.</p>
       </div>
 
       <div class="growth-kpi-hero reveal">
@@ -374,9 +389,9 @@
       </div>
 
       <div class="g-grid-3 reveal">
-        <div class="g-card" style="background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(15,25,15,0.8));"><div class="g-card-label">🎯 Objectif S4</div><div class="g-card-value c-vert">200</div><div class="g-card-sub">Inscrits Beta cible</div></div>
-        <div class="g-card" style="background:linear-gradient(135deg,rgba(212,160,23,0.08),rgba(15,25,15,0.8));"><div class="g-card-label">💰 Valeur pipeline</div><div class="g-card-value c-or">3 200$</div><div class="g-card-sub">18 leads × MRR estimé</div></div>
-        <div class="g-card" style="background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(15,25,15,0.8));"><div class="g-card-label">🌍 Marchés identifiés</div><div class="g-card-value c-bleu">7</div><div class="g-card-sub">Pays Sahel + Afrique Est</div></div>
+        <div class="g-card" style="background:linear-gradient(135deg,rgba(34,197,94,0.3),rgba(15, 25, 15, 0.8));"><div class="g-card-label">🎯 Objectif S4</div><div class="g-card-value c-vert">200</div><div class="g-card-sub">Inscrits Beta cible</div></div>
+        <div class="g-card" style="background:linear-gradient(135deg,rgba(212,160,23,0.3),rgba(15,25,15,0.8));"><div class="g-card-label">💰 Valeur pipeline</div><div class="g-card-value c-or">3 200$</div><div class="g-card-sub">18 leads × MRR estimé</div></div>
+        <div class="g-card" style="background:linear-gradient(135deg,rgba(59,130,246,0.3),rgba(15,25,15,0.8));"><div class="g-card-label">🌍 Marchés identifiés</div><div class="g-card-value c-bleu">7</div><div class="g-card-sub">Pays Sahel + Afrique Est</div></div>
       </div>
     </div>
   </section>
