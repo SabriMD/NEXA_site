@@ -45,7 +45,7 @@
     .burger span{display:block;width:22px;height:2px;background:#080C08;border-radius:2px;transition:all 0.3s;}
 
     /* Mobile nav overlay */
-    .mobile-nav{display:none;position:fixed;top:60px;left:0;right:0;background:#FFF;z-index:99;padding:1.2rem 1.5rem;flex-direction:column;gap:0;border-bottom:2px solid rgba(34,197,94,0.2);box-shadow:0 8px 24px rgba(0,0,0,0.12);}
+    .mobile-nav{display:none;position:fixed;top:52px;left:0;right:0;background:#FFF;z-index:99;padding:1.2rem 1.5rem;flex-direction:column;gap:0;border-bottom:2px solid rgba(34,197,94,0.2);box-shadow:0 8px 24px rgba(0,0,0,0.12);}
     .mobile-nav.open{display:flex;}
     .mobile-nav a{color:#080C08;text-decoration:none;font-size:0.95rem;font-weight:500;padding:0.85rem 0;border-bottom:1px solid rgba(0,0,0,0.06);transition:color 0.2s;}
     .mobile-nav a:last-child{border-bottom:none;margin-top:0.5rem;}
@@ -204,6 +204,12 @@
     .ch-bar-wrap{width:70px;height:4px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;flex-shrink:0;}
     .ch-bar{height:100%;border-radius:3px;}
     .ch-val{width:42px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;flex-shrink:0;}
+    @media(max-width:520px){
+      .ch-bar-wrap{display:none;}
+      .ch-val{width:36px;font-size:13px;}
+      .ch-row{gap:8px;}
+      .ch-desc{display:none;}
+    }
 
     .conv-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
     .conv-item{border-radius:10px;padding:10px;text-align:center;}
@@ -288,13 +294,12 @@
        MOBILE  ≤ 768px
     ══════════════════════════════ */
     @media(max-width:768px){
-      /* Header */
-      header{padding:0.7rem 1rem;min-height:56px;}
-      .logo-slot{height:36px;}
-      .logo-slot img{height:32px;}
-      header .logo-slot:first-child img{height:36px;}
-      /* Hide partner logos in header on mobile — keep only NEXA logo */
-      .header-logos .logo-slot:not(:first-child){display:none;}
+      /* Header — show all logos but smaller */
+      header{padding:0.5rem 0.8rem;min-height:52px;}
+      .header-logos{gap:2px;}
+      .logo-slot{height:30px;padding:0 2px;}
+      .logo-slot img{height:26px;}
+      header .logo-slot:first-child img{height:30px;}
       nav{display:none;}
       .burger{display:flex;}
 
@@ -325,7 +330,11 @@
       .growth{padding:4rem 0;}
       .g-grid-4{grid-template-columns:repeat(2,1fr);gap:10px;}
       .g-grid-2{grid-template-columns:1fr;gap:14px;}
-      .g-grid-3{grid-template-columns:1fr;gap:10px;}
+      .g-grid-3{grid-template-columns:repeat(3,1fr);gap:8px;}
+      .g-grid-3 .g-card{padding:14px 10px;}
+      .g-grid-3 .g-card-value{font-size:22px;}
+      .g-grid-3 .g-card-label{font-size:9px;letter-spacing:1px;}
+      .g-grid-3 .g-card-sub{font-size:10px;}
 
       /* Growth hack block — full width, readable */
       .g-hack{padding:18px;}
@@ -628,12 +637,12 @@
     <div class="footer-links">
       <a href="https://github.com/SabriMD/nexa-grazing" target="_blank">GitHub</a>
       <a href="https://nexa-tcwn.onrender.com" target="_blank">Démo Web</a>
-      <a href="mailto:contact@nexa-africa.com">Contact</a>
+      <a href="/cdn-cgi/l/email-protection#8be8e4e5ffeae8ffcbe5eef3eaa6eaedf9e2e8eaa5e8e4e6">Contact</a>
     </div>
     <div class="footer-copy">© 2026 NEXA · Hackathon Franco-Africain RabHacks</div>
   </footer>
 
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // Cursor (desktop only)
     const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
     let mx=0,my=0,rx=0,ry=0;
@@ -681,8 +690,4 @@
     document.querySelectorAll('.reveal,.problem-card,.step,.feature-card').forEach(el=>obs.observe(el));
 
     // Counter animation
-    const cobs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const t=parseInt(e.target.dataset.target),dur=2000,step=t/(dur/16);let c=0;const tmr=setInterval(()=>{c+=step;if(c>=t){c=t;clearInterval(tmr);}e.target.textContent=t>=1000?Math.floor(c).toLocaleString('fr'):Math.floor(c);},16);cobs.unobserve(e.target);}});},{threshold:0.5});
-    document.querySelectorAll('.stat-num[data-target]').forEach(c=>cobs.observe(c));
-  </script>
-</body>
-</html>
+    const cobs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const t=parseInt(e.target.dataset.target),dur=2000,step=t/(dur/16);let c=0;const tmr=setInterval(()=>{c+=step;if(c>=t){c=t;clearInterval(tmr);}e.target.textContent=t>=1000?Math.floor(c).toLocaleString('fr'):Math.floor(c);},16);cobs.uno
