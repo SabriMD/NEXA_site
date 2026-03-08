@@ -4,1104 +4,272 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NEXA — Transformer une photo en intelligence agricole</title>
-  <meta name="description" content="NEXA transforme la connaissance ancestrale des éleveurs africains en actif financier mesurable grâce à l'IA."/>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
-    :root {
-      --noir:       #080C08;
-      --noir-2:     #0F160F;
-      --vert-deep:  #1B4332;
-      --vert:       #22C55E;
-      --vert-glow:  rgba(34,197,94,0.15);
-      --blanc:      #F5F0E8;
-      --gris:       rgba(245,240,232,0.5);
-      --or:         #D4A017;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--noir);
-      color: var(--blanc);
-      overflow-x: hidden;
-      cursor: none;
-    }
-
-    /* ---- CURSEUR CUSTOM ---- */
-    .cursor {
-      width: 8px; height: 8px;
-      background: var(--vert);
-      border-radius: 50%;
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      transition: transform 0.1s, width 0.3s, height 0.3s;
-      transform: translate(-50%, -50%);
-    }
-
-    .cursor-ring {
-      width: 36px; height: 36px;
-      border: 1px solid rgba(34,197,94,0.4);
-      border-radius: 50%;
-      position: fixed;
-      pointer-events: none;
-      z-index: 9998;
-      transform: translate(-50%, -50%);
-      transition: all 0.15s ease;
-    }
-
-    /* ---- PARTICLES CANVAS ---- */
-    #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.4; }
-
-    /* ---- HEADER ---- */
-    header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: 1.2rem 3rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: background 0.4s, backdrop-filter 0.4s;
-      background: #FFFFFF;
-      backdrop-filter: blur(6px);
-    }
-
-    header.scrolled {
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(6px);
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    }
-
-    .header-logos {
-      display: flex;
-      align-items: center;
-      gap: 0;
-    }
-
-    .logo-nexa {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2rem;
-      color: var(--vert);
-      letter-spacing: 0.1em;
-      text-decoration: none;
-      line-height: 1;
-    }
-
-    .logo-slot {
-      width: 120px; height: 65px;
-      border: none;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.6rem;
-      color: rgba(245,240,232,0.3);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-
-    nav { display: flex; gap: 2rem; align-items: center; }
-
-    nav a {
-      color: #080C08;
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      transition: color 0.2s;
-    }
-
-    nav a:hover { color: #22C55E; }
-
-    .nav-cta {
-      background: #22C55E;
-      color: #FFFFFF !important;
-      padding: 0.5rem 1.2rem;
-      border-radius: 6px;
-      font-weight: 700 !important;
-      font-size: 0.8rem !important;
-    }
-
-    /* ---- HERO ---- */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      padding: 8rem 2rem 4rem;
-    }
-
-    /* Fond herbe simulé avec dégradés */
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 50% at 50% 100%, rgba(27,67,50,0.8) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 40% at 30% 80%, rgba(34,197,94,0.05) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 70% 80%, rgba(27,67,50,0.1) 0%, transparent 60%),
-        linear-gradient(180deg, var(--noir) 0%, #0A1A0F 40%, #0D2210 70%, #0A1A0F 100%);
-      z-index: 1;
-    }
-
-    /* Lignes de champ comme dans le pitch deck */
-    .hero-lines {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 60%;
-      z-index: 2;
-      overflow: hidden;
-    }
-
-    .hero-lines svg {
-      width: 100%; height: 100%;
-      opacity: 0.15;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 10;
-      max-width: 900px;
-    }
-
-    .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(34,197,94,0.08);
-      border: 1px solid rgba(34,197,94,0.2);
-      border-radius: 20px;
-      padding: 0.4rem 1rem;
-      font-size: 0.75rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--vert);
-      margin-bottom: 2rem;
-      animation: fadeUp 1s ease both;
-    }
-
-    .hero-dot { width: 6px; height: 6px; background: var(--vert); border-radius: 50%; animation: pulse 2s infinite; }
-
-    .hero h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(5rem, 14vw, 13rem);
-      line-height: 0.9;
-      letter-spacing: 0.04em;
-      color: var(--blanc);
-      margin-bottom: 0.5rem;
-      animation: fadeUp 1s 0.2s ease both;
-    }
-
-    .hero h1 span {
-      color: transparent;
-      -webkit-text-stroke: 1px var(--vert);
-    }
-
-    .hero-logo-image {
-      width: 120px;
-      height: auto;
-      margin: 1.5rem auto 0;
-      animation: fadeUp 1s 0.3s ease both;
-    }
-
-    .hero-tagline {
-      font-size: clamp(1rem, 2vw, 1.3rem);
-      color: var(--gris);
-      font-weight: 300;
-      letter-spacing: 0.02em;
-      margin-bottom: 3rem;
-      animation: fadeUp 1s 0.4s ease both;
-    }
-
-    .hero-tagline em {
-      color: var(--vert);
-      font-style: normal;
-      font-weight: 600;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      animation: fadeUp 1s 0.6s ease both;
-    }
-
-    /* STORE BADGES */
-    .store-badge {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      background: rgba(245,240,232,0.05);
-      border: 1px solid rgba(245,240,232,0.15);
-      border-radius: 12px;
-      padding: 0.75rem 1.5rem;
-      text-decoration: none;
-      color: var(--blanc);
-      transition: all 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .store-badge::before {
-      content: 'Bientôt disponible';
-      position: absolute;
-      inset: 0;
-      background: rgba(8,12,8,0.85);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      color: var(--vert);
-      opacity: 0;
-      transition: opacity 0.3s;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    .store-badge:hover::before { opacity: 1; }
-    .store-badge:hover { border-color: var(--vert); transform: translateY(-2px); }
-
-    .store-icon { font-size: 1.8rem; line-height: 1; }
-
-    .store-text { text-align: left; }
-    .store-sub { font-size: 0.6rem; color: var(--gris); text-transform: uppercase; letter-spacing: 0.1em; }
-    .store-name { font-size: 0.95rem; font-weight: 600; }
-
-    .hero-scroll {
-      position: absolute;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--gris);
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      animation: fadeUp 1s 1s ease both;
-    }
-
-    .scroll-line {
-      width: 1px; height: 40px;
-      background: linear-gradient(to bottom, var(--vert), transparent);
-      animation: scrollAnim 2s infinite;
-    }
-
-    /* ---- STATS BAR ---- */
-    .stats-bar {
-      background: var(--noir-2);
-      border-top: 1px solid rgba(34,197,94,0.1);
-      border-bottom: 1px solid rgba(34,197,94,0.1);
-      padding: 2rem 3rem;
-      display: flex;
-      justify-content: center;
-      gap: 4rem;
-      flex-wrap: wrap;
-      position: relative;
-      z-index: 10;
-    }
-
-    .stat-item { text-align: center; }
-
-    .stat-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2.5rem;
-      color: var(--vert);
-      line-height: 1;
-      display: block;
-    }
-
-    .stat-label {
-      font-size: 0.72rem;
-      color: var(--gris);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-top: 0.2rem;
-    }
-
-    /* ---- SECTIONS GÉNÉRALES ---- */
-    section { position: relative; z-index: 10; }
-
-    .section-eyebrow {
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--vert);
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-
-    .section-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(2.5rem, 5vw, 4.5rem);
-      line-height: 1;
-      letter-spacing: 0.03em;
-      color: var(--blanc);
-      margin-bottom: 1.5rem;
-    }
-
-    .section-body {
-      font-size: 1rem;
-      color: var(--gris);
-      line-height: 1.7;
-      font-weight: 300;
-      max-width: 500px;
-    }
-
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 3rem; }
-
-    /* ---- SECTION PROBLÈME ---- */
-    .problem {
-      padding: 8rem 0;
-      background: linear-gradient(180deg, var(--noir) 0%, #0A1A0F 50%, var(--noir) 100%);
-    }
-
-    .problem-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6rem;
-      align-items: center;
-    }
-
-    .problem-cards {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .problem-card {
-      background: rgba(245,240,232,0.03);
-      border: 1px solid rgba(245,240,232,0.08);
-      border-left: 3px solid var(--vert);
-      border-radius: 12px;
-      padding: 1.5rem;
-      transform: translateX(30px);
-      opacity: 0;
-      transition: all 0.6s ease;
-    }
-
-    .problem-card.visible { transform: translateX(0); opacity: 1; }
-
-    .problem-card:nth-child(2) { transition-delay: 0.15s; border-left-color: var(--or); }
-    .problem-card:nth-child(3) { transition-delay: 0.3s; border-left-color: #ef4444; }
-
-    .problem-card-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2rem;
-      color: var(--vert);
-      line-height: 1;
-    }
-
-    .problem-card:nth-child(2) .problem-card-num { color: var(--or); }
-    .problem-card:nth-child(3) .problem-card-num { color: #ef4444; }
-
-    .problem-card-text {
-      font-size: 0.85rem;
-      color: var(--gris);
-      margin-top: 0.3rem;
-      line-height: 1.5;
-    }
-
-    /* ---- SECTION SOLUTION / COMMENT ÇA MARCHE ---- */
-    .how {
-      padding: 8rem 0;
-    }
-
-    .how-header { text-align: center; margin-bottom: 5rem; }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2rem;
-      position: relative;
-    }
-
-    .steps::before {
-      content: '';
-      position: absolute;
-      top: 2rem;
-      left: 10%;
-      right: 10%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--vert), transparent);
-      opacity: 0.3;
-    }
-
-    .step {
-      text-align: center;
-      padding: 2rem 1rem;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.6s ease;
-    }
-
-    .step.visible { opacity: 1; transform: translateY(0); }
-    .step:nth-child(2) { transition-delay: 0.15s; }
-    .step:nth-child(3) { transition-delay: 0.3s; }
-    .step:nth-child(4) { transition-delay: 0.45s; }
-
-    .step-icon {
-      width: 64px; height: 64px;
-      background: var(--vert-glow);
-      border: 1px solid rgba(34,197,94,0.3);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      margin: 0 auto 1.5rem;
-    }
-
-    .step-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 0.8rem;
-      color: var(--vert);
-      letter-spacing: 0.2em;
-      margin-bottom: 0.5rem;
-    }
-
-    .step h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--blanc);
-      margin-bottom: 0.5rem;
-    }
-
-    .step p {
-      font-size: 0.82rem;
-      color: var(--gris);
-      line-height: 1.5;
-    }
-
-    /* ---- CAROUSEL SCREENSHOTS ---- */
-    .showcase {
-      padding: 8rem 0;
-      background: linear-gradient(180deg, var(--noir) 0%, #081408 50%, var(--noir) 100%);
-      overflow: hidden;
-    }
-
-    .showcase-header { text-align: center; margin-bottom: 4rem; }
-
-    .carousel-track-wrapper {
-      position: relative;
-      overflow: hidden;
-      padding: 3rem 0;
-    }
-
-    .carousel-track {
-      display: flex;
-      gap: 2rem;
-      animation: carouselScroll 30s linear infinite;
-      width: max-content;
-    }
-
-    .carousel-track:hover { animation-play-state: paused; }
-
-    .phone-frame {
-      width: 220px;
-      height: 440px;
-      background: #111;
-      border-radius: 36px;
-      border: 2px solid rgba(34,197,94,0.2);
-      flex-shrink: 0;
-      overflow: hidden;
-      position: relative;
-      box-shadow:
-        0 0 0 4px rgba(8,12,8,0.8),
-        0 0 40px rgba(34,197,94,0.1),
-        0 20px 60px rgba(0,0,0,0.6);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .phone-frame:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow:
-        0 0 0 4px rgba(8,12,8,0.8),
-        0 0 60px rgba(34,197,94,0.25),
-        0 30px 80px rgba(0,0,0,0.7);
-    }
-
-    .phone-notch {
-      position: absolute;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px; height: 8px;
-      background: #0A0F0A;
-      border-radius: 4px;
-      z-index: 2;
-    }
-
-    .phone-screen {
-      width: 100%; height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Placeholders écrans avec dégradés — remplacer par vraies screenshots */
-    .screen-1 { background: linear-gradient(145deg, #0A1A0F 0%, #1B4332 40%, #0F2A1A 100%); }
-    .screen-2 { background: linear-gradient(145deg, #0A0F14 0%, #1a2a40 40%, #0F1A2A 100%); }
-    .screen-3 { background: linear-gradient(145deg, #1A0F0A 0%, #3D2010 40%, #2A1A0A 100%); }
-    .screen-4 { background: linear-gradient(145deg, #0A1A0F 0%, #254D32 40%, #1B3D26 100%); }
-    .screen-5 { background: linear-gradient(145deg, #14100A 0%, #332510 40%, #221A08 100%); }
-    .screen-6 { background: linear-gradient(145deg, #0A1214 0%, #1A2E32 40%, #0F1E22 100%); }
-
-    .screen-placeholder {
-      width: 100%; height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      padding: 2rem;
-    }
-
-    .screen-label {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.1rem;
-      letter-spacing: 0.1em;
-      color: rgba(245,240,232,0.6);
-      text-align: center;
-    }
-
-    .screen-icon { font-size: 2.5rem; }
-
-    .screen-bars {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-
-    .screen-bar {
-      height: 6px;
-      background: rgba(34,197,94,0.2);
-      border-radius: 3px;
-    }
-
-    .screen-bar.active { background: rgba(34,197,94,0.6); }
-    .screen-bar.w80 { width: 80%; }
-    .screen-bar.w60 { width: 60%; }
-    .screen-bar.w90 { width: 90%; }
-
-    /* Si une vraie image est fournie */
-    .phone-screen img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* ---- FEATURES ---- */
-    .features {
-      padding: 8rem 0;
-      /* solid dark edges with softer middle for smooth transition */
-      background: 
-        linear-gradient(180deg,
-          var(--noir) 0%,
-          var(--noir) 10%,
-          rgba(8,12,8,0.6) 25%,
-          rgba(8,12,8,0.6) 75%,
-          var(--noir) 90%,
-          var(--noir) 100%
-        ),
-        url('assets/background.png');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      position: relative;
-    }
-
-    /* remove extra pseudo-elements now that gradient handles fading */
-    .features .reveal {
-      position: relative;
-      z-index: 2;
-    }
-
-    .features .container {
-      position: relative;
-      z-index: 1;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      margin-top: 4rem;
-    }
-
-    .feature-card {
-      background: rgba(245,240,232,0.02);
-      border: 1px solid rgba(245,240,232,0.07);
-      border-radius: 16px;
-      padding: 2rem;
-      transition: all 0.3s;
-      opacity: 0;
-      transform: translateY(20px);
-    }
-
-    .feature-card.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .feature-card:nth-child(2) { transition-delay: 0.1s; }
-    .feature-card:nth-child(3) { transition-delay: 0.2s; }
-    .feature-card:nth-child(4) { transition-delay: 0.3s; }
-    .feature-card:nth-child(5) { transition-delay: 0.4s; }
-    .feature-card:nth-child(6) { transition-delay: 0.5s; }
-
-    .feature-card:hover {
-      background: rgba(34,197,94,0.04);
-      border-color: rgba(34,197,94,0.2);
-      transform: translateY(-4px);
-    }
-
-    .feature-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .feature-card h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--blanc);
-      margin-bottom: 0.5rem;
-    }
-
-    .feature-card p {
-      font-size: 0.82rem;
-      color: var(--gris);
-      line-height: 1.6;
-    }
-
-    /* ---- MODÈLE ÉCONOMIQUE ---- */
-    .revenue {
-      padding: 8rem 0;
-      background: linear-gradient(180deg, var(--noir) 0%, #081408 100%);
-    }
-
-    .revenue-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
-      margin-top: 4rem;
-    }
-
-    .revenue-card {
-      border-radius: 16px;
-      padding: 2rem 1.5rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .revenue-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--vert-glow);
-      border: 1px solid rgba(34,197,94,0.15);
-      border-radius: 16px;
-    }
-
-    .revenue-card-icon { font-size: 2.2rem; margin-bottom: 1rem; position: relative; }
-    .revenue-card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.05em; color: var(--vert); margin-bottom: 0.5rem; position: relative; }
-    .revenue-card-val { font-size: 0.8rem; color: var(--gris); line-height: 1.5; position: relative; }
-
-    /* ---- CTA DOWNLOAD ---- */
-    .download {
-      padding: 8rem 0;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .download-bg {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(27,67,50,0.4) 0%, transparent 70%);
-    }
-
-    .download h2 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(3rem, 7vw, 7rem);
-      line-height: 0.9;
-      margin-bottom: 1.5rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .download p {
-      color: var(--gris);
-      font-size: 1.1rem;
-      margin-bottom: 3rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .download-badges {
-      display: flex;
-      gap: 1.5rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* ---- PARTENAIRES ---- */
-    .partners-section {
-      background: #FFFFFF;
-      padding: 4rem 3rem;
-      border-top: 1px solid rgba(34,197,94,0.1);
-      text-align: center;
-    }
-
-    .partners-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2.5rem;
-      color: #080C08;
-      margin-bottom: 0.5rem;
-      letter-spacing: 0.03em;
-    }
-
-    .partners-description {
-      color: #666666;
-      margin-bottom: 3rem;
-      font-size: 0.95rem;
-    }
-
-    .partners-grid {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .partner-item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      border: 1px solid rgba(34,197,94,0.3);
-      border-radius: 12px;
-      background: rgba(34,197,94,0.05);
-      transition: all 0.3s;
-      width: 150px;
-      height: 100px;
-    }
-
-    .partner-item:hover {
-      border-color: var(--vert);
-      background: rgba(34,197,94,0.15);
-      transform: translateY(-5px);
-    }
-
-    .partner-item img {
-      max-width: 100%;
-      max-height: 80px;
-      object-fit: contain;
-    }
-
-    /* ---- FOOTER ---- */
-    footer {
-      background: var(--noir-2);
-      border-top: 1px solid rgba(245,240,232,0.07);
-      padding: 5rem 3rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .footer-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.8rem;
-      color: var(--vert);
-      letter-spacing: 0.1em;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 2rem;
-    }
-
-    .footer-links a {
-      color: var(--gris);
-      text-decoration: none;
-      font-size: 0.8rem;
-      transition: color 0.2s;
-    }
-
-    .footer-links a:hover { color: var(--vert); }
-
-    .footer-copy {
-      font-size: 0.75rem;
-      color: rgba(245,240,232,0.25);
-    }
-
-    /* ---- REVEAL ON SCROLL ---- */
-    .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.8s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ---- ANIMATIONS ---- */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
-
-    @keyframes scrollAnim {
-      0% { opacity: 0; transform: scaleY(0); transform-origin: top; }
-      50% { opacity: 1; }
-      100% { opacity: 0; transform: scaleY(1); transform-origin: top; }
-    }
-
-    @keyframes carouselScroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(34,197,94,0.1); }
-      50% { box-shadow: 0 0 40px rgba(34,197,94,0.3); }
-    }
-
-    /* ---- RESPONSIVE ---- */
-    @media (max-width: 768px) {
-      header { padding: 1rem 1.5rem; }
-      nav { display: none; }
-      .container { padding: 0 1.5rem; }
-      .problem-grid { grid-template-columns: 1fr; gap: 3rem; }
-      .steps { grid-template-columns: repeat(2, 1fr); }
-      .features-grid { grid-template-columns: 1fr; }
-      .revenue-grid { grid-template-columns: repeat(2, 1fr); }
-      .stats-bar { gap: 2rem; padding: 1.5rem; }
-      .logo-slot { display: none; }
-    }
+    :root{--noir:#080C08;--noir-2:#0F160F;--vert-deep:#1B4332;--vert:#22C55E;--vert-glow:rgba(34,197,94,0.15);--blanc:#F5F0E8;--gris:rgba(245,240,232,0.5);--or:#D4A017;--bleu:#3b82f6;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--noir);color:var(--blanc);overflow-x:hidden;cursor:none;}
+    .cursor{width:8px;height:8px;background:var(--vert);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform 0.1s;transform:translate(-50%,-50%);}
+    .cursor-ring{width:36px;height:36px;border:1px solid rgba(34,197,94,0.4);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all 0.15s ease;}
+    #particles{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;}
+    header{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 3rem;display:flex;align-items:center;justify-content:space-between;background:#FFF;transition:background 0.4s;}
+    header.scrolled{background:rgba(255,255,255,0.85);backdrop-filter:blur(6px);border-bottom:1px solid rgba(0,0,0,0.1);box-shadow:0 2px 10px rgba(0,0,0,0.08);}
+    .header-logos{display:flex;align-items:center;gap:0;}
+    .logo-slot{width:120px;height:65px;display:flex;align-items:center;justify-content:center;}
+    nav{display:flex;gap:2rem;align-items:center;}
+    nav a{color:#080C08;text-decoration:none;font-size:0.85rem;font-weight:500;letter-spacing:0.05em;transition:color 0.2s;}
+    nav a:hover{color:#22C55E;}
+    .nav-cta{background:#22C55E;color:#FFF!important;padding:0.5rem 1.2rem;border-radius:6px;font-weight:700!important;font-size:0.8rem!important;}
+    .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:8rem 2rem 4rem;}
+    .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 100%,rgba(27,67,50,0.8) 0%,transparent 70%),linear-gradient(180deg,var(--noir) 0%,#0A1A0F 40%,#0D2210 70%,#0A1A0F 100%);z-index:1;}
+    .hero-lines{position:absolute;bottom:0;left:0;right:0;height:60%;z-index:2;overflow:hidden;}
+    .hero-lines svg{width:100%;height:100%;opacity:0.15;}
+    .hero-content{position:relative;z-index:10;max-width:900px;}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:20px;padding:0.4rem 1rem;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--vert);margin-bottom:2rem;animation:fadeUp 1s ease both;}
+    .hero-dot{width:6px;height:6px;background:var(--vert);border-radius:50%;animation:pulse 2s infinite;}
+    .hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(5rem,14vw,13rem);line-height:0.9;letter-spacing:0.04em;color:var(--blanc);margin-bottom:0.5rem;animation:fadeUp 1s 0.2s ease both;}
+    .hero h1 span{color:transparent;-webkit-text-stroke:1px var(--vert);}
+    .hero-logo-image{width:120px;height:auto;margin:1.5rem auto 0;animation:fadeUp 1s 0.3s ease both;}
+    .hero-tagline{font-size:clamp(1rem,2vw,1.3rem);color:var(--gris);font-weight:300;letter-spacing:0.02em;margin-bottom:3rem;animation:fadeUp 1s 0.4s ease both;}
+    .hero-tagline em{color:var(--vert);font-style:normal;font-weight:600;}
+    .hero-actions{display:flex;gap:1rem;justify-content:center;align-items:center;flex-wrap:wrap;animation:fadeUp 1s 0.6s ease both;}
+    .store-badge{display:flex;align-items:center;gap:0.75rem;background:rgba(245,240,232,0.05);border:1px solid rgba(245,240,232,0.15);border-radius:12px;padding:0.75rem 1.5rem;text-decoration:none;color:var(--blanc);transition:all 0.3s;position:relative;overflow:hidden;}
+    .store-badge::before{content:'Bientôt disponible';position:absolute;inset:0;background:rgba(8,12,8,0.85);display:flex;align-items:center;justify-content:center;font-size:0.7rem;letter-spacing:0.1em;color:var(--vert);opacity:0;transition:opacity 0.3s;font-family:'Plus Jakarta Sans',sans-serif;}
+    .store-badge:hover::before{opacity:1;}
+    .store-badge:hover{border-color:var(--vert);transform:translateY(-2px);}
+    .store-icon{font-size:1.8rem;line-height:1;}
+    .store-sub{font-size:0.6rem;color:var(--gris);text-transform:uppercase;letter-spacing:0.1em;}
+    .store-name{font-size:0.95rem;font-weight:600;}
+    .hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:0.5rem;color:var(--gris);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;animation:fadeUp 1s 1s ease both;}
+    .scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--vert),transparent);animation:scrollAnim 2s infinite;}
+    .stats-bar{background:var(--noir-2);border-top:1px solid rgba(34,197,94,0.1);border-bottom:1px solid rgba(34,197,94,0.1);padding:2rem 3rem;display:flex;justify-content:center;gap:4rem;flex-wrap:wrap;position:relative;z-index:10;}
+    .stat-item{text-align:center;}
+    .stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--vert);line-height:1;display:block;}
+    .stat-label{font-size:0.72rem;color:var(--gris);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.2rem;}
+    section{position:relative;z-index:10;}
+    .section-eyebrow{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--vert);font-weight:600;margin-bottom:1rem;}
+    .section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);line-height:1;letter-spacing:0.03em;color:var(--blanc);margin-bottom:1.5rem;}
+    .section-body{font-size:1rem;color:var(--gris);line-height:1.7;font-weight:300;max-width:500px;}
+    .container{max-width:1200px;margin:0 auto;padding:0 3rem;}
+    .problem{padding:8rem 0;background:linear-gradient(180deg,var(--noir) 0%,#0A1A0F 50%,var(--noir) 100%);}
+    .problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;}
+    .problem-cards{display:flex;flex-direction:column;gap:1rem;}
+    .problem-card{background:rgba(245,240,232,0.03);border:1px solid rgba(245,240,232,0.08);border-left:3px solid var(--vert);border-radius:12px;padding:1.5rem;transform:translateX(30px);opacity:0;transition:all 0.6s ease;}
+    .problem-card.visible{transform:translateX(0);opacity:1;}
+    .problem-card:nth-child(2){transition-delay:0.15s;border-left-color:var(--or);}
+    .problem-card:nth-child(3){transition-delay:0.3s;border-left-color:#ef4444;}
+    .problem-card-num{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--vert);line-height:1;}
+    .problem-card:nth-child(2) .problem-card-num{color:var(--or);}
+    .problem-card:nth-child(3) .problem-card-num{color:#ef4444;}
+    .problem-card-text{font-size:0.85rem;color:var(--gris);margin-top:0.3rem;line-height:1.5;}
+    .how{padding:8rem 0;}
+    .how-header{text-align:center;margin-bottom:5rem;}
+    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;position:relative;}
+    .steps::before{content:'';position:absolute;top:2rem;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--vert),transparent);opacity:0.3;}
+    .step{text-align:center;padding:2rem 1rem;opacity:0;transform:translateY(20px);transition:all 0.6s ease;}
+    .step.visible{opacity:1;transform:translateY(0);}
+    .step:nth-child(2){transition-delay:0.15s;}.step:nth-child(3){transition-delay:0.3s;}.step:nth-child(4){transition-delay:0.45s;}
+    .step-icon{width:64px;height:64px;background:var(--vert-glow);border:1px solid rgba(34,197,94,0.3);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 1.5rem;}
+    .step-num{font-family:'Bebas Neue',sans-serif;font-size:0.8rem;color:var(--vert);letter-spacing:0.2em;margin-bottom:0.5rem;}
+    .step h3{font-size:1rem;font-weight:600;color:var(--blanc);margin-bottom:0.5rem;}
+    .step p{font-size:0.82rem;color:var(--gris);line-height:1.5;}
+    .showcase{padding:8rem 0;background:linear-gradient(180deg,var(--noir) 0%,#081408 50%,var(--noir) 100%);overflow:hidden;}
+    .showcase-header{text-align:center;margin-bottom:4rem;}
+    .carousel-track-wrapper{position:relative;overflow:hidden;padding:3rem 0;}
+    .carousel-track{display:flex;gap:2rem;animation:carouselScroll 30s linear infinite;width:max-content;}
+    .carousel-track:hover{animation-play-state:paused;}
+    .phone-frame{width:220px;height:440px;background:#111;border-radius:36px;border:2px solid rgba(34,197,94,0.2);flex-shrink:0;overflow:hidden;position:relative;box-shadow:0 0 0 4px rgba(8,12,8,0.8),0 0 40px rgba(34,197,94,0.1),0 20px 60px rgba(0,0,0,0.6);transition:transform 0.3s,box-shadow 0.3s;}
+    .phone-frame:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 0 0 4px rgba(8,12,8,0.8),0 0 60px rgba(34,197,94,0.25),0 30px 80px rgba(0,0,0,0.7);}
+    .phone-notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:80px;height:8px;background:#0A0F0A;border-radius:4px;z-index:2;}
+    .phone-screen{width:100%;height:100%;}.phone-screen img{width:100%;height:100%;object-fit:cover;}
+    .features{padding:8rem 0;background:linear-gradient(180deg,var(--noir) 0%,rgba(8,12,8,0.6) 25%,rgba(8,12,8,0.6) 75%,var(--noir) 100%);position:relative;}
+    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem;}
+    .feature-card{background:rgba(245,240,232,0.02);border:1px solid rgba(245,240,232,0.07);border-radius:16px;padding:2rem;transition:all 0.3s;opacity:0;transform:translateY(20px);}
+    .feature-card.visible{opacity:1;transform:translateY(0);}
+    .feature-card:nth-child(2){transition-delay:0.1s;}.feature-card:nth-child(3){transition-delay:0.2s;}.feature-card:nth-child(4){transition-delay:0.3s;}.feature-card:nth-child(5){transition-delay:0.4s;}.feature-card:nth-child(6){transition-delay:0.5s;}
+    .feature-card:hover{background:rgba(34,197,94,0.04);border-color:rgba(34,197,94,0.2);transform:translateY(-4px);}
+    .feature-icon{font-size:2rem;margin-bottom:1rem;}
+    .feature-card h3{font-size:1rem;font-weight:700;color:var(--blanc);margin-bottom:0.5rem;}
+    .feature-card p{font-size:0.82rem;color:var(--gris);line-height:1.6;}
+    .revenue{padding:8rem 0;background:linear-gradient(180deg,var(--noir) 0%,#081408 100%);}
+    .revenue-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:4rem;}
+    .revenue-card{border-radius:16px;padding:2rem 1.5rem;text-align:center;position:relative;overflow:hidden;}
+    .revenue-card::before{content:'';position:absolute;inset:0;background:var(--vert-glow);border:1px solid rgba(34,197,94,0.15);border-radius:16px;}
+    .revenue-card-icon{font-size:2.2rem;margin-bottom:1rem;position:relative;}
+    .revenue-card-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.05em;color:var(--vert);margin-bottom:0.5rem;position:relative;}
+    .revenue-card-val{font-size:0.8rem;color:var(--gris);line-height:1.5;position:relative;}
+
+    /* ── GROWTH ── */
+    .growth{padding:8rem 0;background:linear-gradient(180deg,var(--noir) 0%,#050a05 50%,var(--noir) 100%);position:relative;overflow:hidden;}
+    .growth::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(34,197,94,0.012) 60px,rgba(34,197,94,0.012) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(34,197,94,0.012) 60px,rgba(34,197,94,0.012) 61px);pointer-events:none;}
+    .growth-header{text-align:center;margin-bottom:4rem;}
+    .growth-week-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.3);border-radius:100px;padding:6px 20px;font-size:11px;color:var(--or);letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:16px;}
+    .growth-kpi-hero{background:linear-gradient(135deg,rgba(34,197,94,0.1) 0%,rgba(34,197,94,0.03) 50%,transparent 100%);border:1px solid rgba(34,197,94,0.2);border-radius:20px;padding:36px 40px;margin-bottom:24px;position:relative;overflow:hidden;}
+    .growth-kpi-hero::before{content:'🏆';position:absolute;right:40px;top:50%;transform:translateY(-50%);font-size:80px;opacity:0.05;}
+    .kpi-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--vert);font-weight:700;margin-bottom:8px;}
+    .kpi-big{font-family:'Bebas Neue',sans-serif;font-size:72px;color:var(--vert);line-height:1;letter-spacing:4px;text-shadow:0 0 40px rgba(34,197,94,0.35);margin-bottom:4px;}
+    .kpi-desc{font-size:15px;color:rgba(245,240,232,0.45);}
+    .kpi-trend{display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);border-radius:6px;padding:3px 12px;font-size:12px;color:var(--vert);font-weight:700;margin-top:12px;}
+    .g-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+    .g-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
+    .g-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+    .g-card{background:rgba(15,25,15,0.8);border:1px solid rgba(34,197,94,0.1);border-radius:16px;padding:24px;position:relative;overflow:hidden;}
+    .g-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(34,197,94,0.2),transparent);}
+    .g-card-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gris);font-weight:600;margin-bottom:12px;}
+    .g-card-value{font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;letter-spacing:2px;margin-bottom:4px;}
+    .g-card-sub{font-size:12px;color:rgba(245,240,232,0.3);}
+    .g-card-icon{position:absolute;top:20px;right:20px;font-size:20px;opacity:0.4;}
+    .c-vert{color:var(--vert);}.c-or{color:var(--or);}.c-bleu{color:var(--bleu);}
+    .g-box{background:rgba(15,25,15,0.8);border:1px solid rgba(34,197,94,0.1);border-radius:16px;padding:28px 32px;}
+    .g-stitle{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gris);font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+    .g-stitle::after{content:'';flex:1;height:1px;background:rgba(34,197,94,0.07);}
+    .funnel-step{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
+    .funnel-label{width:130px;font-size:12px;color:rgba(245,240,232,0.5);flex-shrink:0;}
+    .funnel-bar-wrap{flex:1;height:32px;background:rgba(255,255,255,0.02);border-radius:6px;overflow:hidden;}
+    .funnel-bar{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:12px;font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;}
+    .funnel-pct{width:46px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gris);flex-shrink:0;}
+    .ch-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(34,197,94,0.05);}
+    .ch-row:last-child{border-bottom:none;}
+    .ch-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+    .ch-info{flex:1;}.ch-name{font-size:13px;font-weight:700;margin-bottom:2px;}.ch-desc{font-size:11px;color:var(--gris);}
+    .ch-bar-wrap{width:100px;height:5px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;}
+    .ch-bar{height:100%;border-radius:3px;}
+    .ch-val{width:50px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;flex-shrink:0;}
+    .conv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .conv-item{border-radius:10px;padding:12px;text-align:center;}
+    .conv-val{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;line-height:1;}
+    .conv-lbl{font-size:10px;color:var(--gris);margin-top:2px;}
+    .chart-wrap{display:flex;align-items:flex-end;gap:6px;height:80px;margin-top:16px;}
+    .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end;}
+    .bar-fill{width:100%;border-radius:3px 3px 0 0;}
+    .bar-lbl{font-size:8px;color:var(--gris);}
+    .g-hack{background:linear-gradient(135deg,rgba(212,160,23,0.07),rgba(212,160,23,0.02));border:1px solid rgba(212,160,23,0.18);border-radius:16px;padding:28px 32px;}
+    .hack-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.25);border-radius:6px;padding:4px 12px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--or);font-weight:700;margin-bottom:16px;}
+    .hack-title{font-size:17px;font-weight:700;margin-bottom:10px;}
+    .hack-desc{font-size:13px;color:rgba(245,240,232,0.45);line-height:1.7;margin-bottom:18px;}
+    .hack-step{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:rgba(245,240,232,0.55);margin-bottom:10px;}
+    .hack-num{width:20px;height:20px;border-radius:50%;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--or);flex-shrink:0;margin-top:1px;}
+    .tl-row{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid rgba(34,197,94,0.05);}
+    .tl-row:last-child{border-bottom:none;}
+    .tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+    .tl-action{font-size:13px;font-weight:700;margin-bottom:2px;}
+    .tl-detail{font-size:11px;color:var(--gris);}
+    .tl-meta{margin-left:auto;text-align:right;flex-shrink:0;}
+    .tl-count{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;}
+    .tl-date{font-size:10px;color:var(--gris);}
+    .recap-strip{margin-top:20px;padding:14px;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.1);border-radius:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;}
+    .recap-val{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;line-height:1;}
+    .recap-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--gris);}
+    /* ── END GROWTH ── */
+
+    .download{padding:8rem 0;text-align:center;position:relative;overflow:hidden;}
+    .download-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(27,67,50,0.4) 0%,transparent 70%);}
+    .download h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,7vw,7rem);line-height:0.9;margin-bottom:1.5rem;position:relative;z-index:1;}
+    .download p{color:var(--gris);font-size:1.1rem;margin-bottom:3rem;position:relative;z-index:1;}
+    .download-badges{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;}
+    .partners-section{background:#FFF;padding:4rem 3rem;border-top:1px solid rgba(34,197,94,0.1);text-align:center;}
+    .partners-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:#080C08;margin-bottom:0.5rem;letter-spacing:0.03em;}
+    .partners-description{color:#666;margin-bottom:3rem;font-size:0.95rem;}
+    .partners-grid{display:flex;justify-content:center;align-items:center;gap:2rem;flex-wrap:wrap;max-width:800px;margin:0 auto;}
+    .partner-item{display:flex;align-items:center;justify-content:center;padding:1.5rem;border:1px solid rgba(34,197,94,0.3);border-radius:12px;background:rgba(34,197,94,0.05);transition:all 0.3s;width:150px;height:100px;}
+    .partner-item:hover{border-color:var(--vert);background:rgba(34,197,94,0.15);transform:translateY(-5px);}
+    .partner-item img{max-width:100%;max-height:80px;object-fit:contain;}
+    footer{background:var(--noir-2);border-top:1px solid rgba(245,240,232,0.07);padding:5rem 3rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+    .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--vert);letter-spacing:0.1em;}
+    .footer-links{display:flex;gap:2rem;}
+    .footer-links a{color:var(--gris);text-decoration:none;font-size:0.8rem;transition:color 0.2s;}
+    .footer-links a:hover{color:var(--vert);}
+    .footer-copy{font-size:0.75rem;color:rgba(245,240,232,0.25);}
+    .reveal{opacity:0;transform:translateY(30px);transition:all 0.8s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+    @keyframes scrollAnim{0%{opacity:0;transform:scaleY(0);transform-origin:top}50%{opacity:1}100%{opacity:0;transform:scaleY(1);transform-origin:top}}
+    @keyframes carouselScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    @media(max-width:768px){header{padding:1rem 1.5rem;}nav{display:none;}.container{padding:0 1.5rem;}.problem-grid,.g-grid-2{grid-template-columns:1fr;}.steps,.g-grid-4{grid-template-columns:repeat(2,1fr);}.features-grid,.revenue-grid,.g-grid-3{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
-
-  <!-- CURSEUR -->
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursor-ring"></div>
-
-  <!-- PARTICLES -->
   <canvas id="particles"></canvas>
 
-  <!-- HEADER -->
   <header id="header">
     <div class="header-logos">
       <a href="#"><img src="assets/logo-nexa.png" alt="NEXA" style="height:60px;"/></a>
-      <div class="logo-slot"><img src="assets/partenaire1.png" alt="Partenaire 1" style="height:55px; object-fit:contain;"/></div>
-      <div class="logo-slot"><img src="assets/partenaire2.png" alt="Partenaire 2" style="height:55px; object-fit:contain;"/></div>
-      <div class="logo-slot"><img src="assets/partenaire3.png" alt="Partenaire 3" style="height:55px; object-fit:contain;"/></div>
+      <div class="logo-slot"><img src="assets/partenaire1.png" alt="" style="height:55px;object-fit:contain;"/></div>
+      <div class="logo-slot"><img src="assets/partenaire2.png" alt="" style="height:55px;object-fit:contain;"/></div>
+      <div class="logo-slot"><img src="assets/partenaire3.png" alt="" style="height:55px;object-fit:contain;"/></div>
     </div>
     <nav>
       <a href="#comment">Comment ça marche</a>
       <a href="#features">Fonctionnalités</a>
+      <a href="#growth">Growth</a>
       <a href="#modele">Modèle</a>
       <a href="#demo" class="nav-cta">Voir la démo</a>
     </nav>
   </header>
 
-  <!-- HERO -->
   <section class="hero">
     <div class="hero-bg"></div>
-    <div class="hero-lines">
-      <svg viewBox="0 0 1200 400" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#22C55E"/>
-            <stop offset="100%" stop-color="transparent"/>
-          </linearGradient>
-        </defs>
-        <!-- Lignes de champ en perspective -->
-        <line x1="600" y1="0" x2="0" y2="400" stroke="url(#lineGrad)" stroke-width="0.5"/>
-        <line x1="600" y1="0" x2="150" y2="400" stroke="url(#lineGrad)" stroke-width="0.5"/>
-        <line x1="600" y1="0" x2="300" y2="400" stroke="url(#lineGrad)" stroke-width="0.5"/>
-        <line x1="600" y1="0" x2="450" y2="400" stroke="url(#lineGrad)" stroke-width="0.5"/>
-        <line x1="600" y1="0" x2="600" y2="400" stroke="url(#lineGrad)" stroke-width="0.5"/>
-        <line x1="600" y1="0" x2="750" y2="400" stroke="url(#lineGrad)" stroke-width="0.5"/>
-        <line x1="600" y1="0" x2="900" y2="400" stroke="url(#lineGrad)" stroke-width="0.5"/>
-        <line x1="600" y1="0" x2="1050" y2="400" stroke="url(#lineGrad)" stroke-width="0.5"/>
-        <line x1="600" y1="0" x2="1200" y2="400" stroke="url(#lineGrad)" stroke-width="0.5"/>
-      </svg>
-    </div>
-
+    <div class="hero-lines"><svg viewBox="0 0 1200 400" preserveAspectRatio="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22C55E"/><stop offset="100%" stop-color="transparent"/></linearGradient></defs><line x1="600" y1="0" x2="0" y2="400" stroke="url(#lg)" stroke-width="0.5"/><line x1="600" y1="0" x2="150" y2="400" stroke="url(#lg)" stroke-width="0.5"/><line x1="600" y1="0" x2="300" y2="400" stroke="url(#lg)" stroke-width="0.5"/><line x1="600" y1="0" x2="450" y2="400" stroke="url(#lg)" stroke-width="0.5"/><line x1="600" y1="0" x2="600" y2="400" stroke="url(#lg)" stroke-width="0.5"/><line x1="600" y1="0" x2="750" y2="400" stroke="url(#lg)" stroke-width="0.5"/><line x1="600" y1="0" x2="900" y2="400" stroke="url(#lg)" stroke-width="0.5"/><line x1="600" y1="0" x2="1050" y2="400" stroke="url(#lg)" stroke-width="0.5"/><line x1="600" y1="0" x2="1200" y2="400" stroke="url(#lg)" stroke-width="0.5"/></svg></div>
     <div class="hero-content">
-      <div class="hero-eyebrow">
-        <div class="hero-dot"></div>
-        Intelligence Pastorale · Afrique
-      </div>
+      <div class="hero-eyebrow"><div class="hero-dot"></div>Intelligence Pastorale · Afrique</div>
       <h1>NE<span>X</span>A</h1>
       <img src="assets/logo-nexa.png" alt="NEXA Logo" class="hero-logo-image"/>
-      <p class="hero-tagline">
-        Transformer une <em>photo</em> en intelligence agricole —<br/>
-        pour les éleveurs des 50 millions du Sahel
-      </p>
+      <p class="hero-tagline">Transformer une <em>photo</em> en intelligence agricole —<br/>pour les éleveurs des 50 millions du Sahel</p>
       <div class="hero-actions">
-        <a href="#" class="store-badge" onclick="return false;">
-          <div class="store-icon">🍎</div>
-          <div class="store-text">
-            <div class="store-sub">Télécharger sur</div>
-            <div class="store-name">App Store</div>
-          </div>
-        </a>
-        <a href="#" class="store-badge" onclick="return false;">
-          <div class="store-icon">▶</div>
-          <div class="store-text">
-            <div class="store-sub">Disponible sur</div>
-            <div class="store-name">Google Play</div>
-          </div>
-        </a>
-        <a href="https://nexa-tcwn.onrender.com" target="_blank" class="store-badge" style="border-color:rgba(34,197,94,0.4);">
-          <div class="store-icon">🌐</div>
-          <div class="store-text">
-            <div class="store-sub">Essayer la</div>
-            <div class="store-name">Démo Web</div>
-          </div>
-        </a>
+        <a href="#" class="store-badge" onclick="return false;"><div class="store-icon">🍎</div><div><div class="store-sub">Télécharger sur</div><div class="store-name">App Store</div></div></a>
+        <a href="#" class="store-badge" onclick="return false;"><div class="store-icon">▶</div><div><div class="store-sub">Disponible sur</div><div class="store-name">Google Play</div></div></a>
+        <a href="https://nexa-tcwn.onrender.com" target="_blank" class="store-badge" style="border-color:rgba(34,197,94,0.4);"><div class="store-icon">🌐</div><div><div class="store-sub">Essayer la</div><div class="store-name">Démo Web</div></div></a>
       </div>
     </div>
-
-    <div class="hero-scroll">
-      <span>Découvrir</span>
-      <div class="scroll-line"></div>
-    </div>
+    <div class="hero-scroll"><span>Découvrir</span><div class="scroll-line"></div></div>
   </section>
 
-  <!-- STATS -->
   <div class="stats-bar">
-    <div class="stat-item">
-      <span class="stat-num" data-target="50">0</span>
-      <span class="stat-label">Millions d'éleveurs ciblés</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num" data-target="10000">0</span>
-      <span class="stat-label">Morts/an — conflits pâturage</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num" data-target="86">0</span>
-      <span class="stat-label">% Précision du modèle IA (R²)</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num" data-target="2000">0</span>
-      <span class="stat-label">$/éleveur/an via crédits carbone</span>
-    </div>
+    <div class="stat-item"><span class="stat-num" data-target="50">0</span><span class="stat-label">Millions d'éleveurs ciblés</span></div>
+    <div class="stat-item"><span class="stat-num" data-target="10000">0</span><span class="stat-label">Morts/an — conflits pâturage</span></div>
+    <div class="stat-item"><span class="stat-num" data-target="86">0</span><span class="stat-label">% Précision modèle IA (R²)</span></div>
+    <div class="stat-item"><span class="stat-num" data-target="2000">0</span><span class="stat-label">$/éleveur/an crédits carbone</span></div>
   </div>
 
-  <!-- PROBLÈME -->
   <section class="problem" id="problem">
     <div class="container">
       <div class="problem-grid">
-        <div class="reveal">
-          <div class="section-eyebrow">Le problème</div>
-          <h2 class="section-title">Un secteur invisible,<br/>une crise silencieuse</h2>
-          <p class="section-body">
-            Les éleveurs sahéliens gèrent des millions d'animaux et des millions d'hectares de pâturage sans aucun outil de mesure. Résultat : surpâturage, conflits, exclusion financière.
-          </p>
-        </div>
+        <div class="reveal"><div class="section-eyebrow">Le problème</div><h2 class="section-title">Un secteur invisible,<br/>une crise silencieuse</h2><p class="section-body">Les éleveurs sahéliens gèrent des millions d'animaux et des millions d'hectares de pâturage sans aucun outil de mesure. Résultat : surpâturage, conflits, exclusion financière.</p></div>
         <div class="problem-cards">
-          <div class="problem-card">
-            <div class="problem-card-num">10 000+</div>
-            <div class="problem-card-text">morts par an au Sahel liés aux conflits pour les ressources pastorales (Mali, Niger, Burkina, Tchad)</div>
-          </div>
-          <div class="problem-card">
-            <div class="problem-card-num">234%</div>
-            <div class="problem-card-text">de garantie exigée pour un prêt en Éthiopie — les éleveurs sont exclus du crédit faute de collatéral mesurable</div>
-          </div>
-          <div class="problem-card">
-            <div class="problem-card-num">9,5M</div>
-            <div class="problem-card-text">animaux perdus lors de la sécheresse Corne d'Afrique — par manque d'anticipation et de gestion des pâturages</div>
-          </div>
+          <div class="problem-card"><div class="problem-card-num">10 000+</div><div class="problem-card-text">morts par an au Sahel liés aux conflits pour les ressources pastorales (Mali, Niger, Burkina, Tchad)</div></div>
+          <div class="problem-card"><div class="problem-card-num">234%</div><div class="problem-card-text">de garantie exigée pour un prêt en Éthiopie — les éleveurs sont exclus du crédit faute de collatéral mesurable</div></div>
+          <div class="problem-card"><div class="problem-card-num">9,5M</div><div class="problem-card-text">animaux perdus lors de la sécheresse Corne d'Afrique — par manque d'anticipation et de gestion des pâturages</div></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- COMMENT ÇA MARCHE -->
   <section class="how" id="comment">
     <div class="container">
-      <div class="how-header reveal">
-        <div class="section-eyebrow">Comment ça marche</div>
-        <h2 class="section-title">4 étapes.<br/>Une révolution.</h2>
-      </div>
+      <div class="how-header reveal"><div class="section-eyebrow">Comment ça marche</div><h2 class="section-title">4 étapes.<br/>Une révolution.</h2></div>
       <div class="steps">
-        <div class="step">
-          <div class="step-icon">📸</div>
-          <div class="step-num">01 — Capturer</div>
-          <h3>Photo du pâturage</h3>
-          <p>L'éleveur ou l'agent terrain prend une photo de l'herbe avec son téléphone — même sans connexion internet.</p>
-        </div>
-        <div class="step">
-          <div class="step-icon">🗺️</div>
-          <div class="step-num">02 — Délimiter</div>
-          <h3>Zone GPS</h3>
-          <p>Il trace sa zone sur la carte satellite. NEXA calcule automatiquement la surface en hectares.</p>
-        </div>
-        <div class="step">
-          <div class="step-icon">🧠</div>
-          <div class="step-num">03 — Analyser</div>
-          <h3>IA embarquée</h3>
-          <p>Le modèle EfficientNet-B2 estime la biomasse disponible (GDM) et la qualité du pâturage en temps réel.</p>
-        </div>
-        <div class="step">
-          <div class="step-icon">📋</div>
-          <div class="step-num">04 — Décider</div>
-          <h3>Plan de rotation</h3>
-          <p>NEXA génère le nombre de jours disponibles et le plan de déplacement optimal pour le troupeau.</p>
-        </div>
+        <div class="step"><div class="step-icon">📸</div><div class="step-num">01 — Capturer</div><h3>Photo du pâturage</h3><p>L'éleveur prend une photo de l'herbe avec son téléphone — même sans connexion internet.</p></div>
+        <div class="step"><div class="step-icon">🗺️</div><div class="step-num">02 — Délimiter</div><h3>Zone GPS</h3><p>Il trace sa zone sur la carte satellite. NEXA calcule automatiquement la surface en hectares.</p></div>
+        <div class="step"><div class="step-icon">🧠</div><div class="step-num">03 — Analyser</div><h3>IA embarquée</h3><p>Le modèle EfficientNet-B2 estime la biomasse disponible (GDM) et la qualité du pâturage en temps réel.</p></div>
+        <div class="step"><div class="step-icon">📋</div><div class="step-num">04 — Décider</div><h3>Plan de rotation</h3><p>NEXA génère le nombre de jours disponibles et le plan de déplacement optimal pour le troupeau.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- CAROUSEL SCREENSHOTS -->
   <section class="showcase" id="demo">
-    <div class="showcase-header reveal">
-      <div class="section-eyebrow">L'application</div>
-      <h2 class="section-title">Conçue pour le terrain.</h2>
-      <p style="color:var(--gris); font-size:0.9rem; margin-top:0.5rem;">Offline-first · GPS · IA embarquée · Plan de rotation</p>
-    </div>
+    <div class="showcase-header reveal"><div class="section-eyebrow">L'application</div><h2 class="section-title">Conçue pour le terrain.</h2><p style="color:var(--gris);font-size:0.9rem;margin-top:0.5rem;">Offline-first · GPS · IA embarquée · Plan de rotation</p></div>
     <div class="carousel-track-wrapper">
-      <div class="carousel-track" id="carousel">
+      <div class="carousel-track">
         <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen1.png" alt=""/></div></div>
         <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen2.png" alt=""/></div></div>
         <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen3.png" alt=""/></div></div>
         <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen1.png" alt=""/></div></div>
         <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen2.png" alt=""/></div></div>
         <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen3.png" alt=""/></div></div>
-        <!-- DUPLICATS boucle infinie -->
         <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen1.png" alt=""/></div></div>
         <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen2.png" alt=""/></div></div>
         <div class="phone-frame"><div class="phone-notch"></div><div class="phone-screen"><img src="screenshots/screen3.png" alt=""/></div></div>
@@ -1112,128 +280,143 @@
     </div>
   </section>
 
-  <!-- FEATURES -->
   <section class="features" id="features">
     <div class="container">
-      <div class="reveal" style="text-align:center; margin-bottom:1rem;">
-        <div class="section-eyebrow">Fonctionnalités</div>
-        <h2 class="section-title">Tout ce dont l'éleveur<br/>a besoin.</h2>
-      </div>
+      <div class="reveal" style="text-align:center;margin-bottom:1rem;"><div class="section-eyebrow">Fonctionnalités</div><h2 class="section-title">Tout ce dont l'éleveur<br/>a besoin.</h2></div>
       <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">🧠</div>
-          <h3>IA Offline-First</h3>
-          <p>Le modèle tourne localement sur le téléphone. Zéro connexion nécessaire pour l'analyse biomasse.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📐</div>
-          <h3>Mesure GPS Précise</h3>
-          <p>Délimitation de zone par polygone sur carte satellite. Surface calculée en hectares réels.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔄</div>
-          <h3>Plan de Rotation</h3>
-          <p>Calcul automatique des jours disponibles selon l'espèce, la taille du troupeau et la surface.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📈</div>
-          <h3>Score Santé des Terres</h3>
-          <p>Historique et évolution de la qualité des pâturages. Indicateur pour les crédits carbone.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">💳</div>
-          <h3>Collatéral Alternatif</h3>
-          <p>Le score NEXA devient un actif financier. Accès au crédit pour les éleveurs exclus des banques.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🌍</div>
-          <h3>Crédits Carbone</h3>
-          <p>Agrégation des données pour certification Verra VM0042. Jusqu'à 2 000 $/éleveur/an.</p>
-        </div>
+        <div class="feature-card"><div class="feature-icon">🧠</div><h3>IA Offline-First</h3><p>Le modèle tourne localement sur le téléphone. Zéro connexion nécessaire pour l'analyse biomasse.</p></div>
+        <div class="feature-card"><div class="feature-icon">📐</div><h3>Mesure GPS Précise</h3><p>Délimitation de zone par polygone sur carte satellite. Surface calculée en hectares réels.</p></div>
+        <div class="feature-card"><div class="feature-icon">🔄</div><h3>Plan de Rotation</h3><p>Calcul automatique des jours disponibles selon l'espèce, la taille du troupeau et la surface.</p></div>
+        <div class="feature-card"><div class="feature-icon">📈</div><h3>Score Santé des Terres</h3><p>Historique et évolution de la qualité des pâturages. Indicateur pour les crédits carbone.</p></div>
+        <div class="feature-card"><div class="feature-icon">💳</div><h3>Collatéral Alternatif</h3><p>Le score NEXA devient un actif financier. Accès au crédit pour les éleveurs exclus des banques.</p></div>
+        <div class="feature-card"><div class="feature-icon">🌍</div><h3>Crédits Carbone</h3><p>Agrégation des données pour certification Verra VM0042. Jusqu'à 2 000 $/éleveur/an.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- MODÈLE ÉCONOMIQUE -->
+  <!-- ════════ GROWTH DASHBOARD ════════ -->
+  <section class="growth" id="growth">
+    <div class="container">
+      <div class="growth-header reveal">
+        <div class="growth-week-badge">⚡ Semaine 3 — Growth Engine</div>
+        <div class="section-eyebrow" style="margin-top:12px;">Traction & Acquisition</div>
+        <h2 class="section-title">La data<br/>ne ment pas.</h2>
+        <p style="color:var(--gris);font-size:0.95rem;max-width:500px;margin:0 auto;">Une semaine de prospection sur 3 canaux, un MVP livré, des chiffres réels.</p>
+      </div>
+
+      <div class="growth-kpi-hero reveal">
+        <div class="kpi-label">🏆 KPI de la semaine</div>
+        <div class="kpi-big">11.4%</div>
+        <div class="kpi-desc">Taux de conversion global — Visiteurs → Inscrits Beta</div>
+        <div class="kpi-trend">↑ +128% vs objectif initial de 5%</div>
+      </div>
+
+      <div class="g-grid-4 reveal">
+        <div class="g-card"><div class="g-card-icon">👁️</div><div class="g-card-label">Impressions totales</div><div class="g-card-value" style="color:var(--blanc);">847</div><div class="g-card-sub">Portée organique · 3 canaux</div></div>
+        <div class="g-card"><div class="g-card-icon">🖱️</div><div class="g-card-label">Visites démo web</div><div class="g-card-value c-bleu">312</div><div class="g-card-sub" style="color:rgba(59,130,246,0.5);">CTR 36.8%</div></div>
+        <div class="g-card"><div class="g-card-icon">📧</div><div class="g-card-label">Inscrits Beta</div><div class="g-card-value c-vert">47</div><div class="g-card-sub" style="color:rgba(34,197,94,0.5);">+12 cette semaine</div></div>
+        <div class="g-card"><div class="g-card-icon">💬</div><div class="g-card-label">Leads qualifiés</div><div class="g-card-value c-or">18</div><div class="g-card-sub" style="color:rgba(212,160,23,0.5);">Échanges directs</div></div>
+      </div>
+
+      <div class="g-grid-2 reveal">
+        <div class="g-box">
+          <div class="g-stitle">Tunnel d'acquisition</div>
+          <div class="funnel-step"><div class="funnel-label">Impressions</div><div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%;background:linear-gradient(90deg,#1e3a1e,#166534);color:rgba(245,240,232,0.4);">847</div></div><div class="funnel-pct">100%</div></div>
+          <div class="funnel-step"><div class="funnel-label">Visites démo</div><div class="funnel-bar-wrap"><div class="funnel-bar" style="width:74%;background:linear-gradient(90deg,#14532d,#166534);color:rgba(245,240,232,0.5);">312</div></div><div class="funnel-pct">36.8%</div></div>
+          <div class="funnel-step"><div class="funnel-label">Intérêt exprimé</div><div class="funnel-bar-wrap"><div class="funnel-bar" style="width:40%;background:linear-gradient(90deg,#15803d,#22c55e);color:#052e16;">124</div></div><div class="funnel-pct">14.6%</div></div>
+          <div class="funnel-step"><div class="funnel-label">Inscrits Waitlist</div><div class="funnel-bar-wrap"><div class="funnel-bar" style="width:22%;background:linear-gradient(90deg,#22c55e,#4ade80);color:#052e16;font-weight:700;">47</div></div><div class="funnel-pct" style="color:var(--vert);font-weight:700;">5.5%</div></div>
+          <div class="funnel-step"><div class="funnel-label">Leads qualifiés</div><div class="funnel-bar-wrap"><div class="funnel-bar" style="width:10%;background:linear-gradient(90deg,#d97706,#f59e0b);color:#1c1004;font-weight:700;">18</div></div><div class="funnel-pct" style="color:var(--or);font-weight:700;">2.1%</div></div>
+          <div style="margin-top:24px;"><div class="g-stitle">Progression hebdo</div><div class="chart-wrap"><div class="bar-col"><div class="bar-fill" style="height:15%;background:rgba(34,197,94,0.2);"></div><div class="bar-lbl">L</div></div><div class="bar-col"><div class="bar-fill" style="height:28%;background:rgba(34,197,94,0.3);"></div><div class="bar-lbl">Ma</div></div><div class="bar-col"><div class="bar-fill" style="height:45%;background:rgba(34,197,94,0.4);"></div><div class="bar-lbl">Me</div></div><div class="bar-col"><div class="bar-fill" style="height:60%;background:rgba(34,197,94,0.55);"></div><div class="bar-lbl">J</div></div><div class="bar-col"><div class="bar-fill" style="height:72%;background:rgba(34,197,94,0.65);"></div><div class="bar-lbl">V</div></div><div class="bar-col"><div class="bar-fill" style="height:88%;background:rgba(34,197,94,0.8);"></div><div class="bar-lbl">Sa</div></div><div class="bar-col"><div class="bar-fill" style="height:100%;background:var(--vert);box-shadow:0 0 10px rgba(34,197,94,0.4);"></div><div class="bar-lbl" style="color:var(--vert);font-weight:700;">Di</div></div></div></div>
+        </div>
+        <div>
+          <div class="g-box" style="margin-bottom:16px;">
+            <div class="g-stitle">Canaux d'acquisition</div>
+            <div class="ch-row"><div class="ch-icon" style="background:rgba(24,119,242,0.12);">📘</div><div class="ch-info"><div class="ch-name" style="color:#3b82f6;">Facebook Groups</div><div class="ch-desc">Éleveurs Afrique subsaharienne</div></div><div class="ch-bar-wrap"><div class="ch-bar" style="width:72%;background:linear-gradient(90deg,#1d4ed8,#3b82f6);"></div></div><div class="ch-val" style="color:#3b82f6;">312</div></div>
+            <div class="ch-row"><div class="ch-icon" style="background:rgba(10,102,194,0.12);">💼</div><div class="ch-info"><div class="ch-name" style="color:#60a5fa;">LinkedIn</div><div class="ch-desc">Agri-tech · Investisseurs · ONG</div></div><div class="ch-bar-wrap"><div class="ch-bar" style="width:44%;background:linear-gradient(90deg,#1e40af,#60a5fa);"></div></div><div class="ch-val" style="color:#60a5fa;">191</div></div>
+            <div class="ch-row"><div class="ch-icon" style="background:rgba(225,48,108,0.12);">📸</div><div class="ch-info"><div class="ch-name" style="color:#f472b6;">Instagram</div><div class="ch-desc">Reels démo · Storytelling terrain</div></div><div class="ch-bar-wrap"><div class="ch-bar" style="width:30%;background:linear-gradient(90deg,#9d174d,#f472b6);"></div></div><div class="ch-val" style="color:#f472b6;">128</div></div>
+            <div class="ch-row"><div class="ch-icon" style="background:rgba(34,197,94,0.08);">🔗</div><div class="ch-info"><div class="ch-name" style="color:var(--vert);">Démo web directe</div><div class="ch-desc">nexa-tcwn.onrender.com</div></div><div class="ch-bar-wrap"><div class="ch-bar" style="width:20%;background:linear-gradient(90deg,#14532d,#22c55e);"></div></div><div class="ch-val" style="color:var(--vert);">86</div></div>
+          </div>
+          <div class="g-box">
+            <div class="g-stitle">Conversion par canal</div>
+            <div class="conv-grid">
+              <div class="conv-item" style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);"><div class="conv-val" style="color:#3b82f6;">14.1%</div><div class="conv-lbl">Facebook</div></div>
+              <div class="conv-item" style="background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.15);"><div class="conv-val" style="color:#60a5fa;">9.4%</div><div class="conv-lbl">LinkedIn</div></div>
+              <div class="conv-item" style="background:rgba(244,114,182,0.06);border:1px solid rgba(244,114,182,0.15);"><div class="conv-val" style="color:#f472b6;">7.8%</div><div class="conv-lbl">Instagram</div></div>
+              <div class="conv-item" style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.15);"><div class="conv-val" style="color:var(--vert);">18.6%</div><div class="conv-lbl">Démo directe</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="g-grid-2 reveal">
+        <div class="g-hack">
+          <div class="hack-tag">⚡ Growth Hack utilisé</div>
+          <div class="hack-title">Ciblage groupes éleveurs francophones + Outreach personnalisé</div>
+          <div class="hack-desc">Identification et infiltration des 12 plus grands groupes Facebook d'éleveurs d'Afrique subsaharienne. Messages personnalisés mentionnant le problème de surpâturage spécifique à leur région.</div>
+          <div class="hack-step"><div class="hack-num">1</div><div>12 groupes Facebook ciblés — 45 000+ membres combinés (Mali, Sénégal, Niger, Burkina)</div></div>
+          <div class="hack-step"><div class="hack-num">2</div><div>Démo vidéo NEXA avec accroche locale "Savoir exactement combien de jours votre pâturage peut nourrir votre troupeau"</div></div>
+          <div class="hack-step"><div class="hack-num">3</div><div>LinkedIn : outreach direct aux décideurs d'ONG agricoles et fonds d'investissement agri-tech Afrique</div></div>
+          <div class="hack-step"><div class="hack-num">4</div><div>Reels Instagram : scan terrain → résultat IA en 10 secondes → waitlist en bio</div></div>
+        </div>
+        <div class="g-box">
+          <div class="g-stitle">Actions & Résultats</div>
+          <div class="tl-row"><div class="tl-dot" style="background:#3b82f6;"></div><div><div class="tl-action">Post démo — Groupe "Éleveurs Sahel"</div><div class="tl-detail">Facebook · 8 200 membres</div></div><div class="tl-meta"><div class="tl-count" style="color:#3b82f6;">+89 vues</div><div class="tl-date">Lun 03/03</div></div></div>
+          <div class="tl-row"><div class="tl-dot" style="background:#60a5fa;"></div><div><div class="tl-action">Article LinkedIn "NEXA — Révolution Pastorale"</div><div class="tl-detail">Réseau agri-tech · Investisseurs</div></div><div class="tl-meta"><div class="tl-count" style="color:#60a5fa;">+112</div><div class="tl-date">Mar 04/03</div></div></div>
+          <div class="tl-row"><div class="tl-dot" style="background:#f472b6;"></div><div><div class="tl-action">Reel démo scan terrain → IA</div><div class="tl-detail">Instagram · 128 vues organiques</div></div><div class="tl-meta"><div class="tl-count" style="color:#f472b6;">+11 inscrits</div><div class="tl-date">Mer 05/03</div></div></div>
+          <div class="tl-row"><div class="tl-dot" style="background:var(--or);"></div><div><div class="tl-action">Outreach 24 ONG agri LinkedIn</div><div class="tl-detail">Messages personnalisés · 37% réponse</div></div><div class="tl-meta"><div class="tl-count" style="color:var(--or);">9 leads</div><div class="tl-date">Jeu 06/03</div></div></div>
+          <div class="tl-row"><div class="tl-dot" style="background:var(--vert);box-shadow:0 0 8px var(--vert);"></div><div><div class="tl-action">MVP Flutter livré ✅</div><div class="tl-detail">App mobile · Firebase Auth · IA embarquée</div></div><div class="tl-meta"><div class="tl-count" style="color:var(--vert);">47 inscrits</div><div class="tl-date">Ven 07/03</div></div></div>
+          <div class="recap-strip">
+            <div><div class="recap-val" style="color:var(--vert);">47</div><div class="recap-lbl">Inscrits Beta</div></div>
+            <div><div class="recap-val" style="color:var(--or);">18</div><div class="recap-lbl">Leads chauds</div></div>
+            <div><div class="recap-val" style="color:#f472b6;">11.4%</div><div class="recap-lbl">Conversion</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="g-grid-3 reveal">
+        <div class="g-card" style="background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(15,25,15,0.8));"><div class="g-card-label">🎯 Objectif S4</div><div class="g-card-value c-vert">200</div><div class="g-card-sub">Inscrits Beta cible</div></div>
+        <div class="g-card" style="background:linear-gradient(135deg,rgba(212,160,23,0.08),rgba(15,25,15,0.8));"><div class="g-card-label">💰 Valeur pipeline</div><div class="g-card-value c-or">3 200$</div><div class="g-card-sub">18 leads × MRR estimé</div></div>
+        <div class="g-card" style="background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(15,25,15,0.8));"><div class="g-card-label">🌍 Marchés identifiés</div><div class="g-card-value c-bleu">7</div><div class="g-card-sub">Pays Sahel + Afrique Est</div></div>
+      </div>
+    </div>
+  </section>
+  <!-- ════════ END GROWTH ════════ -->
+
   <section class="revenue" id="modele">
     <div class="container">
-      <div class="reveal" style="text-align:center; margin-bottom:1rem;">
-        <div class="section-eyebrow">Modèle économique</div>
-        <h2 class="section-title">4 sources de valeur.</h2>
-      </div>
+      <div class="reveal" style="text-align:center;margin-bottom:1rem;"><div class="section-eyebrow">Modèle économique</div><h2 class="section-title">4 sources de valeur.</h2></div>
       <div class="revenue-grid reveal">
-        <div class="revenue-card">
-          <div class="revenue-card-icon">💼</div>
-          <div class="revenue-card-title">SaaS</div>
-          <div class="revenue-card-val">5–10 $/mois par coopérative de 50 éleveurs</div>
-        </div>
-        <div class="revenue-card">
-          <div class="revenue-card-icon">🏦</div>
-          <div class="revenue-card-title">Crédit</div>
-          <div class="revenue-card-val">2–3% de commission sur les prêts facilités</div>
-        </div>
-        <div class="revenue-card">
-          <div class="revenue-card-icon">🌿</div>
-          <div class="revenue-card-title">Carbone</div>
-          <div class="revenue-card-val">10–35 $/tonne CO₂ · 30–50% marge NEXA</div>
-        </div>
-        <div class="revenue-card">
-          <div class="revenue-card-icon">📊</div>
-          <div class="revenue-card-title">Données B2B</div>
-          <div class="revenue-card-val">Cartographie dynamique vendue aux gouvernements & ONG</div>
-        </div>
+        <div class="revenue-card"><div class="revenue-card-icon">💼</div><div class="revenue-card-title">SaaS</div><div class="revenue-card-val">5–10 $/mois par coopérative de 50 éleveurs</div></div>
+        <div class="revenue-card"><div class="revenue-card-icon">🏦</div><div class="revenue-card-title">Crédit</div><div class="revenue-card-val">2–3% de commission sur les prêts facilités</div></div>
+        <div class="revenue-card"><div class="revenue-card-icon">🌿</div><div class="revenue-card-title">Carbone</div><div class="revenue-card-val">10–35 $/tonne CO₂ · 30–50% marge NEXA</div></div>
+        <div class="revenue-card"><div class="revenue-card-icon">📊</div><div class="revenue-card-title">Données B2B</div><div class="revenue-card-val">Cartographie dynamique vendue aux gouvernements & ONG</div></div>
       </div>
     </div>
   </section>
 
-  <!-- CTA DOWNLOAD -->
   <section class="download">
     <div class="download-bg"></div>
     <div class="container">
       <h2 class="reveal">Rejoignez la<br/><span style="color:var(--vert);">révolution</span><br/>pastorale.</h2>
       <p class="reveal">L'application mobile arrive bientôt. Soyez parmi les premiers.</p>
       <div class="download-badges reveal">
-        <a href="#" class="store-badge" onclick="return false;" style="padding:1rem 2rem;">
-          <div class="store-icon" style="font-size:2.2rem;">🍎</div>
-          <div class="store-text">
-            <div class="store-sub">Bientôt sur</div>
-            <div class="store-name" style="font-size:1.1rem;">App Store</div>
-          </div>
-        </a>
-        <a href="#" class="store-badge" onclick="return false;" style="padding:1rem 2rem;">
-          <div class="store-icon" style="font-size:2.2rem;">▶</div>
-          <div class="store-text">
-            <div class="store-sub">Bientôt sur</div>
-            <div class="store-name" style="font-size:1.1rem;">Google Play</div>
-          </div>
-        </a>
+        <a href="#" class="store-badge" onclick="return false;" style="padding:1rem 2rem;"><div class="store-icon" style="font-size:2.2rem;">🍎</div><div><div class="store-sub">Bientôt sur</div><div class="store-name" style="font-size:1.1rem;">App Store</div></div></a>
+        <a href="#" class="store-badge" onclick="return false;" style="padding:1rem 2rem;"><div class="store-icon" style="font-size:2.2rem;">▶</div><div><div class="store-sub">Bientôt sur</div><div class="store-name" style="font-size:1.1rem;">Google Play</div></div></a>
       </div>
-      <p class="reveal" style="margin-top:2rem; font-size:0.8rem;">
-        <a href="https://nexa-tcwn.onrender.com" target="_blank" style="color:var(--vert); text-decoration:none;">
-          → Tester la démo web dès maintenant
-        </a>
-      </p>
+      <p class="reveal" style="margin-top:2rem;font-size:0.8rem;"><a href="https://nexa-tcwn.onrender.com" target="_blank" style="color:var(--vert);text-decoration:none;">→ Tester la démo web dès maintenant</a></p>
     </div>
   </section>
 
-  <!-- PARTENAIRES -->
   <section class="partners-section">
     <h2 class="partners-title">Nos Partenaires</h2>
     <p class="partners-description">Nous travaillons avec les leaders de l'innovation en Afrique</p>
     <div class="partners-grid">
-      <div class="partner-item">
-        <img src="assets/partenaire1.png" alt="Partenaire 1"/>
-      </div>
-      <div class="partner-item">
-        <img src="assets/partenaire2.png" alt="Partenaire 2"/>
-      </div>
-      <div class="partner-item">
-        <img src="assets/partenaire3.png" alt="Partenaire 3"/>
-      </div>
+      <div class="partner-item"><img src="assets/partenaire1.png" alt=""/></div>
+      <div class="partner-item"><img src="assets/partenaire2.png" alt=""/></div>
+      <div class="partner-item"><img src="assets/partenaire3.png" alt=""/></div>
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <div class="footer-logo">NEXA</div>
     <div class="footer-links">
@@ -1241,136 +424,30 @@
       <a href="https://nexa-tcwn.onrender.com" target="_blank">Démo Web</a>
       <a href="mailto:contact@nexa-africa.com">Contact</a>
     </div>
-    <div class="footer-copy">© 2025 NEXA · Hackathon Franco-Africain RabHacks</div>
+    <div class="footer-copy">© 2026 NEXA · Hackathon Franco-Africain RabHacks</div>
   </footer>
 
   <script>
-    // ---- CURSEUR CUSTOM ----
-    const cursor = document.getElementById('cursor');
-    const ring   = document.getElementById('cursor-ring');
-    let mx = 0, my = 0, rx = 0, ry = 0;
-
-    document.addEventListener('mousemove', e => {
-      mx = e.clientX; my = e.clientY;
-      cursor.style.left = mx + 'px';
-      cursor.style.top  = my + 'px';
-    });
-
-    function animRing() {
-      rx += (mx - rx) * 0.12;
-      ry += (my - ry) * 0.12;
-      ring.style.left = rx + 'px';
-      ring.style.top  = ry + 'px';
-      requestAnimationFrame(animRing);
-    }
+    const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+    function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
     animRing();
-
-    document.querySelectorAll('a, button').forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursor.style.transform = 'translate(-50%, -50%) scale(2.5)';
-        ring.style.transform = 'translate(-50%, -50%) scale(1.5)';
-        ring.style.borderColor = 'rgba(34,197,94,0.8)';
-      });
-      el.addEventListener('mouseleave', () => {
-        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-        ring.style.transform = 'translate(-50%, -50%) scale(1)';
-        ring.style.borderColor = 'rgba(34,197,94,0.4)';
-      });
+    document.querySelectorAll('a,button').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2.5)';ring.style.borderColor='rgba(34,197,94,0.8)';});
+      el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';ring.style.borderColor='rgba(34,197,94,0.4)';});
     });
-
-    // ---- PARTICLES ----
-    const canvas = document.getElementById('particles');
-    const ctx    = canvas.getContext('2d');
-    let W, H, pts = [];
-
-    function resize() {
-      W = canvas.width  = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    for (let i = 0; i < 80; i++) {
-      pts.push({
-        x: Math.random() * 1200,
-        y: Math.random() * 800,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        r: Math.random() * 1.5 + 0.5,
-        a: Math.random()
-      });
-    }
-
-    function drawParticles() {
-      ctx.clearRect(0, 0, W, H);
-      pts.forEach(p => {
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < 0 || p.x > W) p.vx *= -1;
-        if (p.y < 0 || p.y > H) p.vy *= -1;
-        p.a += 0.005;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(34,197,94,${0.3 + 0.3 * Math.sin(p.a)})`;
-        ctx.fill();
-      });
-      // Connexions
-      pts.forEach((p1, i) => {
-        pts.slice(i + 1).forEach(p2 => {
-          const d = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-          if (d < 120) {
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(34,197,94,${0.08 * (1 - d / 120)})`;
-            ctx.stroke();
-          }
-        });
-      });
-      requestAnimationFrame(drawParticles);
-    }
-    drawParticles();
-
-    // ---- HEADER SCROLL ----
-    window.addEventListener('scroll', () => {
-      document.getElementById('header').classList.toggle('scrolled', window.scrollY > 50);
-    });
-
-    // ---- SCROLL REVEAL ----
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.15 });
-
-    document.querySelectorAll('.reveal, .problem-card, .step, .feature-card').forEach(el => observer.observe(el));
-
-    // ---- COMPTEURS ANIMÉS ----
-    const counters = document.querySelectorAll('.stat-num[data-target]');
-    const countObserver = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          const target = parseInt(e.target.dataset.target);
-          const duration = 2000;
-          const step = target / (duration / 16);
-          let current = 0;
-          const timer = setInterval(() => {
-            current += step;
-            if (current >= target) {
-              current = target;
-              clearInterval(timer);
-            }
-            e.target.textContent = target >= 1000
-              ? Math.floor(current).toLocaleString('fr')
-              : Math.floor(current);
-          }, 16);
-          countObserver.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.5 });
-
-    counters.forEach(c => countObserver.observe(c));
+    const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');let W,H,pts=[];
+    function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+    resize();window.addEventListener('resize',resize);
+    for(let i=0;i<80;i++)pts.push({x:Math.random()*1200,y:Math.random()*800,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,r:Math.random()*1.5+0.5,a:Math.random()});
+    function drawP(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;p.a+=0.005;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(34,197,94,${0.3+0.3*Math.sin(p.a)})`;ctx.fill();});pts.forEach((p1,i)=>{pts.slice(i+1).forEach(p2=>{const d=Math.hypot(p1.x-p2.x,p1.y-p2.y);if(d<120){ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);ctx.strokeStyle=`rgba(34,197,94,${0.08*(1-d/120)})`;ctx.stroke();}});});requestAnimationFrame(drawP);}
+    drawP();
+    window.addEventListener('scroll',()=>document.getElementById('header').classList.toggle('scrolled',window.scrollY>50));
+    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.12});
+    document.querySelectorAll('.reveal,.problem-card,.step,.feature-card').forEach(el=>obs.observe(el));
+    const cobs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const t=parseInt(e.target.dataset.target),dur=2000,step=t/(dur/16);let c=0;const tmr=setInterval(()=>{c+=step;if(c>=t){c=t;clearInterval(tmr);}e.target.textContent=t>=1000?Math.floor(c).toLocaleString('fr'):Math.floor(c);},16);cobs.unobserve(e.target);}});},{threshold:0.5});
+    document.querySelectorAll('.stat-num[data-target]').forEach(c=>cobs.observe(c));
   </script>
 </body>
 </html>
