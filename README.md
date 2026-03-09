@@ -152,9 +152,7 @@ The `index.html` includes the full landing page with:
 
 ## 📱 Mobile App
 
-The Flutter mobile app lives in a separate repository:  
-👉 [github.com/SabriMD/nexa-grazing](https://github.com/SabriMD/nexa-grazing)
-
+The Flutter mobile app lives in a separate repository:
 **Stack:** Flutter · Firebase Auth · Hive · ONNX Runtime · OpenWeatherMap API · flutter_map
 
 ---
