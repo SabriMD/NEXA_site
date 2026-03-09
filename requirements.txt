@@ -1,2 +1,8 @@
 fastapi
 uvicorn
+python-multipart
+jinja2
+onnxruntime
+numpy
+Pillow
+gdown
