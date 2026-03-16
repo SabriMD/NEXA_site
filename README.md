@@ -183,5 +183,5 @@ MIT License — see [LICENSE](./LICENSE)
 
 <div align="center">
   <strong>🌍 50 million farmers deserve better tools.</strong><br/>
-  <a href="https://nexa-tcwn.onrender.com">nexa-tcwn.onrender.com</a>
+  <a href="https://nexa-site.onrender.com/">Official Site</a>
 </div>
